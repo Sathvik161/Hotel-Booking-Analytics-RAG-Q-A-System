@@ -1,0 +1,57 @@
+Implementation Report: Hotel Booking Analytics & RAG System
+1. Overview
+This project implements a hotel booking analytics and Q&A system using Retrieval-Augmented Generation (RAG) and Large Language Models (LLMs). It provides:
+Automated data preprocessing for structured hotel booking data.
+Analytics generation (revenue trends, cancellation rates, geographical distributions).
+Question-answering using RAG, leveraging FAISS for retrieval and Groq Mixtral for response generation.
+FastAPI integration for exposing APIs (/analytics and /ask).
+Streamlit frontend for user interaction.
+
+2. Technology Stack
+Component	Technology Used	Reason
+Backend API	FastAPI	Fast, lightweight, and easy-to-use REST API framework
+Frontend UI	Streamlit	Simple interactive UI for data upload and querying
+LLM Model	Groq Mixtral	Efficient and cost-effective large language model
+Embeddings	Google Generative AI	High-quality text embeddings for retrieval
+Vector Store	FAISS	Optimized for fast and scalable similarity searches
+Database	SQLite	Lightweight database for storing analytics and embeddings
+Data Processing	Pandas, NumPy	Efficient data manipulation
+
+3. Implementation Choices
+A. Data Preprocessing
+Handling missing values: 
+oFilled missing numerical values (e.g., children, agent, company) with 0.
+oDropped records with missing country values.
+Converted date columns to datetime format for better filtering.
+Normalized column names for consistency.
+B. Analytics Generation
+Implemented using Groq Mixtral to generate insights.
+Stored results in SQLite to avoid redundant computation.
+Provided an API (/analytics) for retrieving stored analytics.
+C. RAG Model Implementation
+Stored full booking records as text chunks for better retrieval.
+Generated embeddings using Google Generative AI.
+Used FAISS for efficient similarity search.
+Retrieved relevant records from FAISS before querying Mixtral.
+D. FastAPI Integration
+Exposed endpoints: 
+oPOST /analytics → Fetch precomputed analytics.
+oPOST /ask → Query booking-related data using RAG.
+API automatically starts in a separate thread when Streamlit runs.
+E. Streamlit Frontend
+Allows users to: 
+oUpload datasets for preprocessing.
+oFetch analytics with a single button click.
+oAsk booking-related questions and receive AI-generated answers.
+Communicates with FastAPI for seamless backend integration.
+
+4. Challenges & Solutions
+Challenge	Solution
+Large Dataset Processing	Used batch processing for embeddings, optimized SQLite inserts
+Slow FAISS Retrieval	Switched to IndexIVFFlat for faster searches
+API Rate Limits (Google AI & Groq)	Implemented caching for embeddings and analytics
+Multiple Processes (Streamlit + FastAPI)	Launched FastAPI in a separate thread to avoid manual startup
+
+
+5. Conclusion
+This project successfully integrates data analytics, RAG-based Q&A, and a user-friendly interface into a single system. By leveraging LLMs, FAISS, and FastAPI, it efficiently processes hotel booking data, generates insights, and provides intelligent answers to user queries.
